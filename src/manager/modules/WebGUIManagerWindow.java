@@ -2,14 +2,14 @@ package manager.modules;
 
 import java.awt.EventQueue;
 
-import manager.views.ManagerMain;
+import manager.views.WebGUIManagerView;
 
-public class Manager {
+public class WebGUIManagerWindow {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ManagerMain frame = new ManagerMain();
+					WebGUIManagerView frame = new WebGUIManagerView();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -3,6 +3,10 @@ package manager.views;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import manager.modules.StorageDirSettingWindow;
+import manager.subsystems.SettingManager;
+
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -31,10 +35,12 @@ import javax.swing.SpinnerListModel;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
-public class ManagerMain extends JFrame {
+public class WebGUIManagerView extends JFrame {
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private List<String> ipList;
-	public ManagerMain() {
+	public WebGUIManagerView() {
+		SettingManager.getInstance();
 		this.initIPs();
 		this.initFrame();
 		this.initPanel();
@@ -78,6 +84,12 @@ public class ManagerMain extends JFrame {
 		
 		JMenuItem mntmStorageDir = new JMenuItem("Storage Dir");
 		mnSettings.add(mntmStorageDir);
+		mntmStorageDir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				StorageDirSettingWindow sds = new StorageDirSettingWindow();
+				sds.main();
+			}
+		});
 		
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mnHelp.add(mntmAbout);
@@ -92,7 +104,6 @@ public class ManagerMain extends JFrame {
 		JButton btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("start");
 				try {
 					Runtime.getRuntime().exec("/tomcat/bin/catalina.bat start");
 					/*
@@ -115,11 +126,9 @@ public class ManagerMain extends JFrame {
 		JButton btnStop = new JButton("Stop");
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("stop");
 				try {
 					Runtime.getRuntime().exec("/tomcat/bin/catalina.bat stop");
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -127,15 +136,19 @@ public class ManagerMain extends JFrame {
 		try {
 			InetAddress IP = InetAddress.getLocalHost();
 		} catch (UnknownHostException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
 		
 		JComboBox comboBox = new JComboBox();
 		comboBox.setModel(new DefaultComboBoxModel(this.ipList.toArray(new String[this.ipList.size()])));
 		comboBox.setMaximumRowCount(this.ipList.size());
 		comboBox.setEditable(true);
+		comboBox.addActionListener (new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		    	SettingManager.ipAddress = "Yo";
+		    	SettingManager.saveIPAddress();
+		    }
+		});
 		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
@@ -146,28 +159,27 @@ public class ManagerMain extends JFrame {
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 							.addContainerGap())
-						.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-							.addGroup(gl_contentPane.createSequentialGroup()
-								.addComponent(lblIpAddress)
-								.addContainerGap())
-							.addGroup(gl_contentPane.createSequentialGroup()
-								.addComponent(btnStart, GroupLayout.PREFERRED_SIZE, 142, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
-								.addComponent(btnStop, GroupLayout.PREFERRED_SIZE, 139, GroupLayout.PREFERRED_SIZE)
-								.addGap(50)))))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addComponent(lblIpAddress)
+							.addContainerGap())
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addComponent(btnStart, GroupLayout.PREFERRED_SIZE, 142, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+							.addComponent(btnStop, GroupLayout.PREFERRED_SIZE, 139, GroupLayout.PREFERRED_SIZE)
+							.addGap(50))))
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_contentPane.createSequentialGroup()
-					.addContainerGap(49, Short.MAX_VALUE)
+					.addGap(26)
 					.addComponent(lblIpAddress)
-					.addPreferredGap(ComponentPlacement.RELATED)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(55)
+					.addPreferredGap(ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnStop)
-						.addComponent(btnStart))
-					.addGap(63))
+						.addComponent(btnStart)
+						.addComponent(btnStop))
+					.addGap(53))
 		);
 		this.contentPane.setLayout(gl_contentPane);
 	}
