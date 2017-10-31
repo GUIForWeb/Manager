@@ -32,13 +32,18 @@ public class SettingManager {
 		if(!sFile.exists()){
 			try {
 				sFile.createNewFile();
+				this.json = new JSONObject();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 		else {
 			try {
-				String content = new Scanner(new File(this.path)).next();
+				Scanner scn = new Scanner(new File(this.path));
+				String content = "{}";
+				if(scn.hasNextLine()) {
+					content = scn.next();
+				}
 				this.json = new JSONObject(content);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -46,17 +51,26 @@ public class SettingManager {
 		}
 	}
 	public static void loadStorageDir() {
-		tFieldSDir.setText(json.getString("storageDir"));
+		if(json.has("storageDir"))
+			tFieldSDir.setText(json.getString("storageDir"));
+	}
+	public static void loadIPAddress() {
+		if(json.has("ipAddress"))
+			ipAddress = json.getString("ipAddress");
 	}
 	public static void saveIPAddress() {
 		if(null == json)
 			json = new JSONObject();
-		System.out.println(ipAddress);
+		json.put("ipAddress", ipAddress);
+		jsonToFile();
 	}
 	public static void saveStorageDir() {
 		if(null == json)
 			json = new JSONObject();
 		json.put("storageDir", storageDir);
+		jsonToFile();
+	}
+	private static void jsonToFile() {
 		try {
 			FileWriter fw = new FileWriter(path);
 			fw.write(json.toString());

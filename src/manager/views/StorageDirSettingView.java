@@ -42,6 +42,7 @@ public class StorageDirSettingView extends JDialog{
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				SettingManager.storageDir = tFieldSDir.getText();
 				SettingManager.saveStorageDir();
 			}
 		});
@@ -57,7 +58,6 @@ public class StorageDirSettingView extends JDialog{
 				if(response == JFileChooser.APPROVE_OPTION){
 					storageDir = fc.getSelectedFile().toString();
 					tFieldSDir.setText(storageDir);
-					SettingManager.storageDir = storageDir;
 				}
 			}
 		});

@@ -48,9 +48,11 @@ public class WebGUIManagerView extends JFrame {
 		this.initMain();
 	}
 	private void initIPs(){
+		SettingManager.loadIPAddress();
 		try {
 			Enumeration<NetworkInterface> networkInterface = NetworkInterface.getNetworkInterfaces();
 			this.ipList = new ArrayList<String>();
+			List<String> tmpIpList = new ArrayList<String>();
 		    for (; networkInterface.hasMoreElements();)
 		    {
 		        NetworkInterface e = networkInterface.nextElement();
@@ -59,9 +61,12 @@ public class WebGUIManagerView extends JFrame {
 		            InetAddress addr = a.nextElement();
 		            if (addr instanceof Inet6Address) continue;
 		            else if (addr.getHostAddress().equals("127.0.0.1")) continue;
-		            this.ipList.add(addr.getHostAddress());
+		            tmpIpList.add(addr.getHostAddress());
 		        }
 		    }
+		    if(null != SettingManager.ipAddress && !tmpIpList.contains(SettingManager.ipAddress))
+		    	this.ipList.add(SettingManager.ipAddress);
+		    this.ipList.addAll(tmpIpList);
 		} catch (SocketException e1) {
 			e1.printStackTrace();
 		}  
@@ -101,12 +106,26 @@ public class WebGUIManagerView extends JFrame {
 	}
 	private void initMain() {
 		JLabel lblIpAddress = new JLabel("IP Address");
+		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(this.ipList.toArray(new String[this.ipList.size()])));
+		comboBox.setMaximumRowCount(this.ipList.size());
+		comboBox.setEditable(true);
+		
+		comboBox.addActionListener (new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		    	SettingManager.ipAddress = (String) comboBox.getSelectedItem();
+		    	SettingManager.saveIPAddress();
+		    }
+		});
 		JButton btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				SettingManager.ipAddress = (String) comboBox.getSelectedItem();
+		    	SettingManager.saveIPAddress();
+		    	/*
 				try {
 					Runtime.getRuntime().exec("/tomcat/bin/catalina.bat start");
-					/*
+					
 					Process p = 
 					BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			        String line;
@@ -115,11 +134,12 @@ public class WebGUIManagerView extends JFrame {
 			            if (line == null) { break; }
 			            System.out.println(line);
 			        }
-			        */
+			      
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+				*/
 			}
 		});
 		
@@ -138,17 +158,6 @@ public class WebGUIManagerView extends JFrame {
 		} catch (UnknownHostException e1) {
 			e1.printStackTrace();
 		}
-		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(this.ipList.toArray(new String[this.ipList.size()])));
-		comboBox.setMaximumRowCount(this.ipList.size());
-		comboBox.setEditable(true);
-		comboBox.addActionListener (new ActionListener () {
-		    public void actionPerformed(ActionEvent e) {
-		    	SettingManager.ipAddress = "Yo";
-		    	SettingManager.saveIPAddress();
-		    }
-		});
 		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
