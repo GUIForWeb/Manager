@@ -5,24 +5,29 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
 
 import manager.subsystems.SettingManager;
+import manager.subsystems.WindowManager;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class StorageDirSettingView extends JDialog{
+public class StorageDirSettingView extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private String storageDir;
-
+	private int oWidth = 450;
+	private int oHeight = 150;
+	private int x;
+	private int y;
 	public StorageDirSettingView() {
+		this.x = (int) WindowManager.webGUIView.getLocation().getX();
+		this.y = (int) WindowManager.webGUIView.getLocation().getY() + 50;
 		this.initFrame();
 		this.initPanel();
 		this.initialize();
@@ -102,7 +107,7 @@ public class StorageDirSettingView extends JDialog{
 		super.setTitle("Storage Setting");
 		super.setResizable(false);
 		super.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		super.setBounds(100, 100, 450, 150);
+		super.setBounds(this.x, this.y, this.oWidth, this.oHeight);
 	}
 	private void initPanel(){
 		this.contentPane = new JPanel();

@@ -4,18 +4,17 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import manager.modules.StorageDirSettingWindow;
+import manager.modules.AboutWindow;
+import manager.modules.StorageDirSettingDialog;
 import manager.subsystems.SettingManager;
+import manager.subsystems.WindowManager;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -29,9 +28,6 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerListModel;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
@@ -41,6 +37,8 @@ public class WebGUIManagerView extends JFrame {
 	private List<String> ipList;
 	public WebGUIManagerView() {
 		SettingManager.getInstance();
+		WindowManager.getInstance();
+		WindowManager.webGUIView = this;
 		this.initIPs();
 		this.initFrame();
 		this.initPanel();
@@ -91,12 +89,18 @@ public class WebGUIManagerView extends JFrame {
 		mnSettings.add(mntmStorageDir);
 		mntmStorageDir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				StorageDirSettingWindow sds = new StorageDirSettingWindow();
+				StorageDirSettingDialog sds = new StorageDirSettingDialog();
 				sds.main();
 			}
 		});
 		
 		JMenuItem mntmAbout = new JMenuItem("About");
+		mntmAbout.addActionListener (new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		    	AboutWindow aw = new AboutWindow();
+		    	aw.main();
+		    }
+		});
 		mnHelp.add(mntmAbout);
 	}
 	private void initPanel(){
@@ -106,8 +110,8 @@ public class WebGUIManagerView extends JFrame {
 	}
 	private void initMain() {
 		JLabel lblIpAddress = new JLabel("IP Address");
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(this.ipList.toArray(new String[this.ipList.size()])));
+		JComboBox<Object> comboBox = new JComboBox<Object>();
+		comboBox.setModel(new DefaultComboBoxModel<Object>(this.ipList.toArray(new String[this.ipList.size()])));
 		comboBox.setMaximumRowCount(this.ipList.size());
 		comboBox.setEditable(true);
 		
@@ -153,12 +157,6 @@ public class WebGUIManagerView extends JFrame {
 				}
 			}
 		});
-		try {
-			InetAddress IP = InetAddress.getLocalHost();
-		} catch (UnknownHostException e1) {
-			e1.printStackTrace();
-		}
-		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)

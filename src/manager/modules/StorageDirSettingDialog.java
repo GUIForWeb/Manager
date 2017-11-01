@@ -2,15 +2,15 @@ package manager.modules;
 
 import java.awt.EventQueue;
 
-import manager.views.WebGUIManagerView;
+import manager.views.StorageDirSettingView;
 
-public class WebGUIManagerWindow {
-	public static void main(String[] args) {
+public class StorageDirSettingDialog{
+	public void main() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					WebGUIManagerView frame = new WebGUIManagerView();
-					frame.setVisible(true);
+					StorageDirSettingView view = new StorageDirSettingView();
+					view.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
