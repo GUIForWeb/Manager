@@ -1,7 +1,6 @@
 package manager.modules;
 
 import java.awt.EventQueue;
-import java.awt.Window.Type;
 
 import manager.views.DirSettingView;
 

@@ -31,9 +31,6 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JRadioButton;
-import javax.swing.JToggleButton;
-import java.awt.Color;
 import javax.swing.ImageIcon;
 
 public class WebGUIManagerView extends JFrame {
