@@ -6,16 +6,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-import javax.swing.JTextField;
-
 import org.json.JSONObject;
 
 public class SettingManager {
-	private static String path;
+	private static String jsonPath;
 	public static String storageDir;
+	public static String sqliteDir;
+	public static String managerDir;
+	public static String serverDir;
 	public static String ipAddress;
 	private static JSONObject json;
-	public static JTextField tFieldSDir;
 	private static SettingManager instance;
 	public static SettingManager getInstance() {
 		if(null == instance) {
@@ -25,34 +25,43 @@ public class SettingManager {
 		return instance;
 	}
 	public SettingManager() {
-		this.path = this.getClass().getClassLoader().getResource("").getPath() + "/setting.json";
+		managerDir = this.getClass().getClassLoader().getResource("").getPath();
+		jsonPath = managerDir + "/setting.json";
 	}
 	public void init(){
-		File sFile = new File(this.path);
+		File sFile = new File(jsonPath);
 		if(!sFile.exists()){
 			try {
 				sFile.createNewFile();
-				this.json = new JSONObject();
+				json = new JSONObject();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 		else {
 			try {
-				Scanner scn = new Scanner(new File(this.path));
-				String content = "{}";
-				if(scn.hasNextLine()) {
-					content = scn.next();
+				Scanner scn = new Scanner(new File(jsonPath));
+				String content = "";
+				while(scn.hasNextLine()) {
+					content += scn.next();
 				}
-				this.json = new JSONObject(content);
+				if(content.equals(""))
+					content = "{}";
+				json = new JSONObject(content);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
 	}
-	public static void loadStorageDir() {
+	public static void loadDir() {
 		if(json.has("storageDir"))
-			tFieldSDir.setText(json.getString("storageDir"));
+			storageDir = json.getString("storageDir");
+		if(json.has("sqliteDir"))
+			sqliteDir = json.getString("sqliteDir");
+		if(json.has("managerDir"))
+			managerDir = json.getString("managerDir");
+		if(json.has("serverDir"))
+			serverDir = json.getString("serverDir");
 	}
 	public static void loadIPAddress() {
 		if(json.has("ipAddress"))
@@ -64,31 +73,22 @@ public class SettingManager {
 		json.put("ipAddress", ipAddress);
 		jsonToFile();
 	}
-	public static void saveStorageDir() {
+	public static void saveDir() {
 		if(null == json)
 			json = new JSONObject();
 		json.put("storageDir", storageDir);
+		json.put("sqliteDir", sqliteDir);
+		json.put("managerDir", managerDir);
+		json.put("serverDir", serverDir);
 		jsonToFile();
 	}
 	private static void jsonToFile() {
 		try {
-			FileWriter fw = new FileWriter(path);
+			FileWriter fw = new FileWriter(jsonPath);
 			fw.write(json.toString());
 			fw.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	public String getStorageDir() {
-		return storageDir;
-	}
-	public void setStorageDir(String storageDir) {
-		this.storageDir = storageDir;
-	}
-	public JTextField gettFieldSDir() {
-		return tFieldSDir;
-	}
-	public void settFieldSDir(JTextField tFieldSDir) {
-		this.tFieldSDir = tFieldSDir;
 	}
 }

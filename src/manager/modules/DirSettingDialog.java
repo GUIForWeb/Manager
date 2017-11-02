@@ -1,15 +1,16 @@
 package manager.modules;
 
 import java.awt.EventQueue;
+import java.awt.Window.Type;
 
-import manager.views.StorageDirSettingView;
+import manager.views.DirSettingView;
 
-public class StorageDirSettingDialog{
+public class DirSettingDialog{
 	public void main() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					StorageDirSettingView view = new StorageDirSettingView();
+					DirSettingView view = new DirSettingView();
 					view.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
