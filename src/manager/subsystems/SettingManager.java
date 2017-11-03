@@ -8,12 +8,15 @@ import java.util.Scanner;
 
 import org.json.JSONObject;
 
+import manager.xmls.XMLReader;
+
 public class SettingManager {
 	private static String jsonPath;
 	public static String storageDir;
 	public static String sqliteDir;
 	public static String managerDir;
 	public static String serverDir;
+	public static String xmlPath;
 	public static String ipAddress;
 	private static JSONObject json;
 	private static SettingManager instance;
@@ -25,7 +28,7 @@ public class SettingManager {
 		return instance;
 	}
 	public SettingManager() {
-		managerDir = this.getClass().getClassLoader().getResource("").getPath();
+		managerDir = this.getClass().getClassLoader().getResource(".").getPath();
 		jsonPath = managerDir + "/setting.json";
 	}
 	public void init(){
@@ -52,14 +55,13 @@ public class SettingManager {
 				e.printStackTrace();
 			}
 		}
+		json.put("managerDir", managerDir);
 	}
 	public static void loadDir() {
 		if(json.has("storageDir"))
 			storageDir = json.getString("storageDir");
 		if(json.has("sqliteDir"))
 			sqliteDir = json.getString("sqliteDir");
-		if(json.has("managerDir"))
-			managerDir = json.getString("managerDir");
 		if(json.has("serverDir"))
 			serverDir = json.getString("serverDir");
 	}
@@ -78,9 +80,10 @@ public class SettingManager {
 			json = new JSONObject();
 		json.put("storageDir", storageDir);
 		json.put("sqliteDir", sqliteDir);
-		json.put("managerDir", managerDir);
 		json.put("serverDir", serverDir);
+		xmlPath = serverDir + "/webapps/WebGUI/WEB-INF/setting.xml";
 		jsonToFile();
+		XMLReader xmlLoader = new XMLReader(xmlPath,"directory");
 	}
 	private static void jsonToFile() {
 		try {
