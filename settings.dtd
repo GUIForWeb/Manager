@@ -1,0 +1,15 @@
+<!ELEMENT setting ((directories)+)>
+<!ELEMENT directories ((directory)+)>
+<!ELEMENT directory (#PCDATA)>
+<!ATTLIST directory name CDATA #REQUIRED>
+
+
+
+
+
+
+
+
+
+
+

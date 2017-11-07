@@ -3,17 +3,13 @@ package manager.xmls;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.DocumentBuilder;
 
-import org.apache.xerces.dom.AttributeMap;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -21,61 +17,77 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.ibm.icu.util.BytesTrie.Iterator;
-
 import manager.xmls.XMLException;
 import manager.xmls.XMLReader;
 
 public class XMLReader {
-	private Document doc;
+	private Document document;
 	private String xmlPath;
 	private String treeTagName;
 	private String ppName = "";
 	private JSONObject json = new JSONObject();
-	private JSONArray jsonArray = new JSONArray();
 	private List<Integer> hashCodeList;
+	public XMLReader() {
+	}
 	public XMLReader(String xmlPath) {
+		this.xmlPath = xmlPath;
+		this.readXML();
 	}
 	public XMLReader(String xmlPath, String treeTagName){
 		this.xmlPath = xmlPath;
 		this.treeTagName = treeTagName;
-		try {
-			this.readSpecificXML();
-		} catch (XMLException e) {
-			e.printStackTrace();
-		}
+		this.readSpecificXML();
 	}
-	
-	public void readSpecificXML() throws XMLException {
-		if(this.xmlPath == null)
-			throw new XMLException("XML does not exist!");
-		if(this.treeTagName == null)
-			throw new XMLException("treeTagName is null!");
-		File xmlFile = new File(this.xmlPath);
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		dbFactory.setIgnoringComments(true);
-		DocumentBuilder dBuilder;
-		NodeList nodeList;
+	public void readXML(String xmlPath) {
+		this.xmlPath = xmlPath;
+		this.readXML();
+	}
+	public void readXML(String xmlPath, String treeTagName) {
+		this.xmlPath = xmlPath;
+		this.treeTagName = treeTagName;
+		this.readSpecificXML();
+	}
+	public void readSpecificXML() {
+		
+	}
+	public void readXML() {
 		try {
+			if(this.xmlPath == null)
+				throw new XMLException("XML does not exist!");
+			File xmlFile = new File(this.xmlPath);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			dbFactory.setIgnoringComments(true);
+			DocumentBuilder dBuilder;
+			NodeList nodeList;
 			dBuilder = dbFactory.newDocumentBuilder();
 			dbFactory.setValidating(true);
-			this.doc = dBuilder.parse(xmlFile);
-			this.doc.getDocumentElement().normalize();
-			nodeList = this.doc.getElementsByTagName(this.treeTagName);
-			if(nodeList.getLength() == 0) 
-				throw new XMLException("the tag of the name deos not exist!");
+			this.document = dBuilder.parse(xmlFile);
+			this.document.getDocumentElement().normalize();
+			if(this.treeTagName == null) {
+				nodeList = this.document.getChildNodes();
+				if(nodeList.getLength() == 0) 
+					throw new XMLException("the tag of the name deos not exist!");
+				else {
+					this.json = new JSONObject();
+					this.hashCodeList = new ArrayList<Integer>();
+					this.read(nodeList, new JSONObject(), 0);
+					this.json = this.json.getJSONObject(this.json.keys().next());
+				}
+			}
+			/*
 			else {
-				this.json = new JSONObject();
-				this.hashCodeList = new ArrayList<Integer>();
-				this.read(nodeList, new JSONObject(), 0);
-				System.out.println("============================");
-				System.out.println(this.json);
-			}	
+				if(this.treeTagName == null)
+					throw new XMLException("treeTagName is null!");
+				nodeList = this.document.getElementsByTagName(this.treeTagName);
+			}
+			*/
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (XMLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -101,9 +113,9 @@ public class XMLReader {
 			}
 		}
 	}
-	
 	private Node read(NodeList nodeList, JSONObject json, int cnt) throws XMLException {
 		Node tmpNode = nodeList.item(cnt);
+		JSONArray tmpJArr;
 		if(tmpNode != null) {
 			String name = tmpNode.getNodeName();
 			String pName = tmpNode.getParentNode().getNodeName();
@@ -113,7 +125,6 @@ public class XMLReader {
 				this.findAndPut(this.json, pName, name);
 				tmpNode = this.read(tmpNode.getChildNodes(), json, 0);
 				if(tmpNode != null) {
-					JSONArray tmpJArr;
 					String tmpPPName = tmpNode.getParentNode().getParentNode().getNodeName();
 					if(!this.ppName.equals(tmpPPName)){
 						this.ppName = tmpPPName;
@@ -128,8 +139,27 @@ public class XMLReader {
 					tmpJArr.put(tmpJSON);
 				}
 			}
-			else if(!tmpNode.getTextContent().trim().equals("")) {
+			else if(tmpNode.getTextContent() != null && !tmpNode.getTextContent().trim().equals("")) {
 				return tmpNode;
+			}
+			else if(tmpNode.getNodeType() != 3 && tmpNode.getTextContent() != null) {
+				pName = tmpNode.getParentNode().getNodeName();
+				this.findAndPut(this.json, pName, name);
+				if(!json.has(name)) {
+					json = new JSONObject();
+					json.put(name, new JSONArray());
+					json.put("pName",pName);
+				}
+				if(!json.getString("pName").equals(pName)){
+					json = new JSONObject();
+					json.put(name, new JSONArray());
+					json.put("pName",pName); 
+				}
+				tmpJArr = json.getJSONArray(name);
+				JSONObject tmpJSON = new JSONObject();
+				this.read(tmpNode.getAttributes(),tmpJSON, 0);
+				tmpJSON.put("textContent", tmpNode.getTextContent());
+				tmpJArr.put(tmpJSON);
 			}
 			tmpNode = this.read(nodeList, json, ++cnt);
 			int hashCode = json.hashCode();
@@ -158,7 +188,7 @@ public class XMLReader {
 		else {
 			tmpJSON = json.getJSONObject(pName);
 			if(tmpJSON.has(name)){
-				tmpJSON.put(name, valJSON.get(name));
+				tmpJSON.put(name, valJSON.get(name));	
 			}
 		}
 	}
@@ -180,5 +210,17 @@ public class XMLReader {
 	}
 	public void setTreeTagName(String treeTagName) {
 		this.treeTagName = treeTagName;
+	}
+	public JSONObject getJson() {
+		return json;
+	}
+	public void setJson(JSONObject json) {
+		this.json = json;
+	}
+	public Document getDocument() {
+		return document;
+	}
+	public void setDocument(Document document) {
+		this.document = document;
 	}
 }

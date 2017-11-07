@@ -39,11 +39,13 @@ public class WebGUIManagerView extends JFrame {
 	private List<String> ipList;
 	private JLabel lblNewLabel;
 	private boolean isRunning;
+	private boolean isExsistedIP;
 	public WebGUIManagerView() {
 		SettingManager.getInstance();
 		SettingManager.loadDir();
 		WindowManager.getInstance();
 		WindowManager.webGUIView = this;
+		this.isExsistedIP = false;
 		this.initIPs();
 		this.initFrame();
 		this.initPanel();
@@ -69,6 +71,8 @@ public class WebGUIManagerView extends JFrame {
 		    }
 		    if(null != SettingManager.ipAddress && !tmpIpList.contains(SettingManager.ipAddress))
 		    	this.ipList.add(SettingManager.ipAddress);
+		    else
+		    	this.isExsistedIP = true;
 		    this.ipList.addAll(tmpIpList);
 		} catch (SocketException e1) {
 			e1.printStackTrace();
@@ -121,7 +125,8 @@ public class WebGUIManagerView extends JFrame {
 		comboBox.setModel(new DefaultComboBoxModel<Object>(this.ipList.toArray(new String[this.ipList.size()])));
 		comboBox.setMaximumRowCount(this.ipList.size());
 		comboBox.setEditable(true);
-		
+		if(this.isExsistedIP) 
+			comboBox.setSelectedItem(SettingManager.ipAddress);
 		comboBox.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
 		    	SettingManager.ipAddress = (String) comboBox.getSelectedItem();
@@ -197,7 +202,6 @@ public class WebGUIManagerView extends JFrame {
 	            	this.isRunning = true;
 	            }
 	        }
-	        System.out.println(line);
 	        if(isRunning){
 	        	this.lblNewLabel.setIcon(new ImageIcon(SettingManager.managerDir+"/../imgs/on.png"));
 	        }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE setting SYSTEM "settings.dtd">
+<settings>
+	<directories>
+		<directory name="server">1</directory>
+		<directory name="sqlite">2</directory>
+		<directory name="storage">3</directory>
+	</directories>
+	<values>
+		<value name="a">a</value>
+		<value name="b">b</value>
+		<value name="c">c</value>
+		<valuez>
+			<value name="d">d</value>
+			<value name="e">e</value>
+			<value name="f">f</value>
+			<valuezz>
+				<value name="g">g</value>
+				<value name="h">h</value>
+				<value name="i">i</value>
+			</valuezz>
+		</valuez>
+	</values>
+</settings>
+

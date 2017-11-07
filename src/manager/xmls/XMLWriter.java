@@ -10,65 +10,105 @@ package manager.xmls;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
-import org.apache.xerces.dom.AttributeMap;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import manager.xmls.XMLException;
 import manager.xmls.XMLWriter;
 
 public class XMLWriter {
-	private Document doc;
+	private Document document;
 	private String xmlPath;
-	private String treeTagName;
-	private HashMap<String,String> info;
-	private List<Map<String,String>> regularMap;
-	public XMLWriter()
-	{
-		this.info = new HashMap<String,String>();
-		this.regularMap = new ArrayList<Map<String,String>>();
+	public XMLWriter(){
 	}
-	public XMLWriter(String xmlPath, String treeTagName){
+	public XMLWriter(String xmlPath) {
 		this.xmlPath = xmlPath;
-		this.treeTagName = treeTagName;
-		this.info = new HashMap<String,String>();
-		this.regularMap = new ArrayList<Map<String,String>>();
 		try {
 			this.readXML();
 		} catch (XMLException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void readXML() throws XMLException
-	{
+	public void put(String tagName, String newText, String attr, String attrValue){
+		NodeList nodeList;
+		nodeList = this.document.getElementsByTagName(tagName);
+		if(nodeList.getLength() == 0)
+		try {
+			throw new XMLException("the tag of the name deos not exist!");
+		} catch (XMLException e) {
+			e.printStackTrace();
+		}
+		this.findAndPut(nodeList, newText, attr, attrValue, 0);
+	}
+	public void put(String tagName, String newText){
+		NodeList nodeList;
+		nodeList = this.document.getElementsByTagName(tagName);
+		if(nodeList.getLength() == 0)
+		try {
+			throw new XMLException("the tag of the name deos not exist!");
+		} catch (XMLException e) {
+			e.printStackTrace();
+		}
+		Node tmpNode = nodeList.item(0);
+		tmpNode.setTextContent(newText);
+	}
+	public void save(){
+		try {
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			StreamResult output = new StreamResult(new File(this.xmlPath));
+			Source input = new DOMSource(this.document);
+			transformer.transform(input, output);
+		} catch (TransformerFactoryConfigurationError | TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	private void findAndPut(NodeList nodeList, String newText, String attr, String attrValue, int cnt){
+		Node tmpNode = nodeList.item(cnt);
+		if(tmpNode != null) {
+			if(this.read(tmpNode.getAttributes(), attr, attrValue, 0)){
+				tmpNode.setTextContent(newText);
+				System.out.println(tmpNode.getTextContent());
+			}
+			this.findAndPut(nodeList, newText, attr, attrValue, ++cnt);
+		}
+	}
+	private boolean read(NamedNodeMap namedNodeMap, String attr, String attrValue, int cnt){
+		boolean flag = false;
+		Node tmpNode = namedNodeMap.item(cnt);
+		if(tmpNode != null) {
+			if(tmpNode.getNodeName().equals(attr) && tmpNode.getTextContent().equals(attrValue))
+				flag = true;
+			this.read(namedNodeMap, attr, attrValue, ++cnt);
+		}
+		return flag;
+	}
+	private void readXML() throws XMLException {
 		if(this.xmlPath == null)
-			throw new XMLException("XML path is null!");
-		if(this.treeTagName == null)
-			throw new XMLException("treeTagName is null!");
+			throw new XMLException("XML does not exist!");
 		File xmlFile = new File(this.xmlPath);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		dbFactory.setIgnoringComments(true);
 		DocumentBuilder dBuilder;
-		NodeList nodeList;
 		try {
 			dBuilder = dbFactory.newDocumentBuilder();
 			dbFactory.setValidating(true);
-			this.doc = dBuilder.parse(xmlFile);
-			this.doc.getDocumentElement().normalize();
-			nodeList = this.doc.getElementsByTagName(this.treeTagName);
-			this.makeRegular(nodeList);
+			this.document = dBuilder.parse(xmlFile);
+			this.document.getDocumentElement().normalize();
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
@@ -77,61 +117,16 @@ public class XMLWriter {
 			e.printStackTrace();
 		}
 	}
-	private void makeRegular(NodeList nodeList) {
-		int tmpLen;
-		String tmpNodeName = "";
-		String tmpParentNodeName = "";
-		String tmpTextContent = "";
-		Node tmpNode;
-		NodeList tmpNodeList;
-		tmpNodeList = nodeList;
-		tmpLen = tmpNodeList.getLength();
-		for(int li=0; li<tmpLen; li++) {
-			System.out.println(nodeList.item(li).getAttributes().getNamedItem("name").getTextContent());
-			System.out.println(nodeList.item(li).getTextContent());
-			/*
-			tmpNode = tmpNodeList.item(li);
-			tmpNodeName = tmpNode.getNodeName();
-			tmpParentNodeName = tmpNode.getParentNode().getNodeName();
-			tmpTextContent = tmpNode.getTextContent();
-			if(tmpNode.hasChildNodes()) {
-				this.makeRegular(tmpNode.getChildNodes());
-			}
-			else {
-				if(!tmpNode.getTextContent().trim().equals("") || tmpNode.getNodeType() == 1) {
-					Map<String,String> tmpRegularMap = new HashMap<String,String>();
-					tmpRegularMap.put(tmpNode.getParentNode().getNodeName(),tmpNode.getTextContent());
-					AttributeMap tmpAMap = (AttributeMap) tmpNode.getParentNode().getAttributes();
-					for(int mi=0; mi<tmpAMap.getLength(); mi++)
-						tmpRegularMap.put(tmpAMap.item(mi).getNodeName(),tmpAMap.item(mi).getTextContent());
-					this.regularMap.add(tmpRegularMap);
-				}
-			}
-			*/
-		}
-	}
 	public String getXmlPath() {
 		return xmlPath;
 	}
 	public void setXmlPath(String xmlPath) {
 		this.xmlPath = xmlPath;
 	}
-	public String getTreeTagName() {
-		return treeTagName;
+	public Document getDocument() {
+		return document;
 	}
-	public void setTreeTagName(String treeTagName) {
-		this.treeTagName = treeTagName;
-	}
-	public HashMap<String, String> getInfo() {
-		return info;
-	}
-	public void setInfo(HashMap<String, String> info) {
-		this.info = info;
-	}
-	public List<Map<String, String>> getRegularMap() {
-		return regularMap;
-	}
-	public void setRegularMap(List<Map<String, String>> regularMap) {
-		this.regularMap = regularMap;
+	public void setDocument(Document document) {
+		this.document = document;
 	}
 }
