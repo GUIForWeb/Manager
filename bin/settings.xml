@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<settings>
-	<directories>
-		<directory name="server">aaa</directory>
-		<directory name="sqlite">bbb</directory>
-		<directory name="storage">ccc</directory>
-	</directories>
-	<ip_address>ddd</ip_address>
-</settings>

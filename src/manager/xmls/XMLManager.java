@@ -5,44 +5,38 @@ import org.w3c.dom.Document;
 
 public class XMLManager {
 	private Document document;
-	private XMLReader reader = new XMLReader();
-	private XMLWriter writer = new XMLWriter();
+	private XMLReader reader;
+	private XMLWriter writer;
 	private String xmlPath;
 	private String treeTagName;
-	public XMLManager() {
-	}
 	public XMLManager(String xmlPath) {
 		this.xmlPath = xmlPath;
+		this.reader = new XMLReader(this.xmlPath);
+		this.writer = new XMLWriter(this.xmlPath);
 		this.initXML();
 	}
 	public XMLManager(String xmlPath, String treeTagName) {
 		this.xmlPath = xmlPath;
 		this.treeTagName = treeTagName;
-		this.initSpecificXML();
-	}
-	public void read(String xmlPath) {
-		this.xmlPath = xmlPath;
+		this.reader = new XMLReader(this.xmlPath);
+		this.writer = new XMLWriter(this.xmlPath);
 		this.initXML();
 	}
-	public void read(String xmlPath, String treeTagName) {
-		this.xmlPath = xmlPath;
+	public void read() {
+		this.reader.readXML();
+	}
+	public void read(String treeTagName) {
 		this.treeTagName = treeTagName;
-		this.initSpecificXML();
+		this.initXML();
+		this.reader.readXML();
 	}
 	private void initXML() {
-		this.reader.setXmlPath(this.xmlPath);
-		this.writer.setXmlPath(this.xmlPath);
-		this.reader.readXML();
 		this.document = this.reader.getDocument();
-		this.writer.setDocument(this.document);
-	}
-	private void initSpecificXML() {
-		this.reader.setXmlPath(this.xmlPath);
 		this.reader.setTreeTagName(this.treeTagName);
 		this.writer.setXmlPath(this.xmlPath);
-		this.reader.readSpecificXML();
 		this.writer.setDocument(this.document);
 	}
+	
 	public JSONObject getJSON(){
 		return this.reader.getJson();
 	}

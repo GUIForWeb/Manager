@@ -3,14 +3,14 @@ package manager.views;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JWindow;
-
-import manager.subsystems.WindowManager;
-
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
 import javax.swing.LayoutStyle.ComponentPlacement;
+
+import manager.subsystems.windows.WindowManager;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 

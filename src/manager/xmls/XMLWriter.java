@@ -1,11 +1,3 @@
-/****************************************************************************************************
-* Project: comp3095assignment2
-* Assignment: Assignment 2 
-* Author(s): Gon Hu, Elis Shukullari, Leba Rubinoff
-* Student Number: 100936779, 100823478, 100831385 
-* Date: December 5, 2016
-* Description: XML files Loader
-****************************************************************************************************/
 package manager.xmls;
 
 import java.io.File;
@@ -82,7 +74,6 @@ public class XMLWriter {
 		if(tmpNode != null) {
 			if(this.read(tmpNode.getAttributes(), attr, attrValue, 0)){
 				tmpNode.setTextContent(newText);
-				System.out.println(tmpNode.getTextContent());
 			}
 			this.findAndPut(nodeList, newText, attr, attrValue, ++cnt);
 		}

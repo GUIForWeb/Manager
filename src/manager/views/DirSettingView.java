@@ -7,8 +7,9 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.border.EmptyBorder;
 
-import manager.subsystems.SettingManager;
-import manager.subsystems.WindowManager;
+import manager.subsystems.settings.SettingManager;
+import manager.subsystems.settings.SettingProp;
+import manager.subsystems.windows.WindowManager;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,10 +24,11 @@ public class DirSettingView extends JDialog{
 	private int oHeight = 350;
 	private int x;
 	private int y;
+	private SettingManager sm;
 	public DirSettingView() {
 		this.x = (int) WindowManager.webGUIView.getLocation().getX();
 		this.y = (int) WindowManager.webGUIView.getLocation().getY() + 50;
-		SettingManager.loadDir();
+		this.sm = new SettingManager();
 		this.initFrame();
 		this.initPanel();
 		this.initialize();
@@ -40,7 +42,7 @@ public class DirSettingView extends JDialog{
 		JTextField tFManagerDir = new JTextField();
 		tFManagerDir.setText((String) null);
 		tFManagerDir.setColumns(10);
-		tFManagerDir.setText(SettingManager.managerDir);
+		tFManagerDir.setText(SettingProp.managerDir);
 		contentPane.add(tFManagerDir, "cell 0 1 3 1,grow");
 		
 		JLabel lblServerDirectory = new JLabel("Server Directory");
@@ -49,7 +51,7 @@ public class DirSettingView extends JDialog{
 		JTextField tFServerDir = new JTextField();
 		tFServerDir.setText((String) null);
 		tFServerDir.setColumns(10);
-		tFServerDir.setText(SettingManager.serverDir);
+		tFServerDir.setText(SettingProp.serverDir);
 		contentPane.add(tFServerDir, "cell 0 3 3 1,grow");
 		
 		JButton btnOpenBrowser0 = new JButton("Open Browser");
@@ -69,7 +71,7 @@ public class DirSettingView extends JDialog{
 		contentPane.add(lblStorageDirectory, "cell 0 4,grow");
 		JTextField tFStorageDir = new JTextField();
 		tFStorageDir.setColumns(10);
-		tFStorageDir.setText(SettingManager.storageDir);
+		tFStorageDir.setText(SettingProp.storageDir);
 		contentPane.add(tFStorageDir, "cell 0 5 3 1,grow");
 		
 		JButton btnOpenBrowser1 = new JButton("Open Browser");
@@ -89,7 +91,7 @@ public class DirSettingView extends JDialog{
 		
 		JTextField tFSQLiteDir = new JTextField();
 		tFSQLiteDir.setColumns(10);
-		tFSQLiteDir.setText(SettingManager.sqliteDir);
+		tFSQLiteDir.setText(SettingProp.sqliteDir);
 		contentPane.add(tFSQLiteDir, "cell 0 7 3 1,grow");
 		JButton btnClose = new JButton("Close");
 		btnClose.addActionListener(new ActionListener() {
@@ -114,10 +116,10 @@ public class DirSettingView extends JDialog{
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SettingManager.serverDir = tFServerDir.getText();
-				SettingManager.storageDir = tFStorageDir.getText();
-				SettingManager.sqliteDir = tFSQLiteDir.getText();
-				SettingManager.saveDir();
+				SettingProp.serverDir = tFServerDir.getText();
+				SettingProp.storageDir = tFStorageDir.getText();
+				SettingProp.sqliteDir = tFSQLiteDir.getText();
+				sm.saveDir();
 			}
 		});
 		contentPane.add(btnSave, "cell 3 8,grow");

@@ -6,8 +6,10 @@ import javax.swing.border.EmptyBorder;
 
 import manager.modules.AboutWindow;
 import manager.modules.DirSettingDialog;
-import manager.subsystems.SettingManager;
-import manager.subsystems.WindowManager;
+import manager.msgs.Message;
+import manager.subsystems.settings.SettingManager;
+import manager.subsystems.settings.SettingProp;
+import manager.subsystems.windows.WindowManager;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -40,9 +42,13 @@ public class WebGUIManagerView extends JFrame {
 	private JLabel lblNewLabel;
 	private boolean isRunning;
 	private boolean isExsistedIP;
+	private SettingManager sm;
 	public WebGUIManagerView() {
+		this.sm = new SettingManager();
+		/*
 		SettingManager.getInstance();
 		SettingManager.loadDir();
+		*/
 		WindowManager.getInstance();
 		WindowManager.webGUIView = this;
 		this.isExsistedIP = false;
@@ -53,13 +59,12 @@ public class WebGUIManagerView extends JFrame {
 		this.initMain();
 	}
 	private void initIPs(){
-		SettingManager.loadIPAddress();
+		this.sm.loadIPAddress();
 		try {
 			Enumeration<NetworkInterface> networkInterface = NetworkInterface.getNetworkInterfaces();
 			this.ipList = new ArrayList<String>();
 			List<String> tmpIpList = new ArrayList<String>();
-		    for (; networkInterface.hasMoreElements();)
-		    {
+		    for (; networkInterface.hasMoreElements();) {
 		        NetworkInterface e = networkInterface.nextElement();
 		        Enumeration<InetAddress> a = e.getInetAddresses();
 		        for (; a.hasMoreElements();) {
@@ -69,8 +74,9 @@ public class WebGUIManagerView extends JFrame {
 		            tmpIpList.add(addr.getHostAddress());
 		        }
 		    }
-		    if(null != SettingManager.ipAddress && !tmpIpList.contains(SettingManager.ipAddress))
-		    	this.ipList.add(SettingManager.ipAddress);
+		    if(null != SettingProp.ipAddress)
+		    if(!tmpIpList.contains(SettingProp.ipAddress))
+		    	this.ipList.add(SettingProp.ipAddress);
 		    else
 		    	this.isExsistedIP = true;
 		    this.ipList.addAll(tmpIpList);
@@ -119,33 +125,37 @@ public class WebGUIManagerView extends JFrame {
 	}
 	private void initMain() {
 		this.lblNewLabel = new JLabel("");
-		this.lblNewLabel.setIcon(new ImageIcon(SettingManager.managerDir+"/../imgs/off.png"));
+		this.lblNewLabel.setIcon(new ImageIcon(SettingProp.managerDir+"/../imgs/off.png"));
 		JLabel lblIpAddress = new JLabel("IP Address for Online Account");
 		JComboBox<Object> comboBox = new JComboBox<Object>();
 		comboBox.setModel(new DefaultComboBoxModel<Object>(this.ipList.toArray(new String[this.ipList.size()])));
 		comboBox.setMaximumRowCount(this.ipList.size());
 		comboBox.setEditable(true);
 		if(this.isExsistedIP) 
-			comboBox.setSelectedItem(SettingManager.ipAddress);
+			comboBox.setSelectedItem(SettingProp.ipAddress);
 		comboBox.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
-		    	SettingManager.ipAddress = (String) comboBox.getSelectedItem();
-		    	SettingManager.saveIPAddress();
+		    	SettingProp.ipAddress = (String) comboBox.getSelectedItem();
+		    	sm.saveIPAddress();
 		    }
 		});
+		Message msg = new Message();
 		JButton btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SettingManager.ipAddress = (String) comboBox.getSelectedItem();
-		    	SettingManager.saveIPAddress();
-		    	console(SettingManager.serverDir +"/bin/catalina.sh start");
+				if(!msg.start()) {
+					SettingProp.ipAddress = (String) comboBox.getSelectedItem();
+					sm.saveIPAddress();
+					sm.saveServerXML();
+					//console(SettingManager.serverDir +"/bin/catalina.sh start");
+				}
 			}
 		});
 		
 		JButton btnStop = new JButton("Stop");
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				console(SettingManager.serverDir +"/bin/catalina.sh stop 1");
+				console(SettingProp.serverDir +"/bin/catalina.sh stop 1");
 			}
 		});
 		
@@ -203,10 +213,10 @@ public class WebGUIManagerView extends JFrame {
 	            }
 	        }
 	        if(isRunning){
-	        	this.lblNewLabel.setIcon(new ImageIcon(SettingManager.managerDir+"/../imgs/on.png"));
+	        	this.lblNewLabel.setIcon(new ImageIcon(SettingProp.managerDir+"/../imgs/on.png"));
 	        }
 	        else {
-	        	this.lblNewLabel.setIcon(new ImageIcon(SettingManager.managerDir+"/../imgs/off.png"));
+	        	this.lblNewLabel.setIcon(new ImageIcon(SettingProp.managerDir+"/../imgs/off.png"));
 	        }
 		} catch (IOException e) {
 			e.printStackTrace();

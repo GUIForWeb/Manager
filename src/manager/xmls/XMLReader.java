@@ -27,69 +27,64 @@ public class XMLReader {
 	private String ppName = "";
 	private JSONObject json = new JSONObject();
 	private List<Integer> hashCodeList;
-	public XMLReader() {
-	}
 	public XMLReader(String xmlPath) {
 		this.xmlPath = xmlPath;
-		this.readXML();
 	}
 	public XMLReader(String xmlPath, String treeTagName){
 		this.xmlPath = xmlPath;
 		this.treeTagName = treeTagName;
-		this.readSpecificXML();
-	}
-	public void readXML(String xmlPath) {
-		this.xmlPath = xmlPath;
-		this.readXML();
 	}
 	public void readXML(String xmlPath, String treeTagName) {
 		this.xmlPath = xmlPath;
 		this.treeTagName = treeTagName;
-		this.readSpecificXML();
+		this.readXML();
 	}
-	public void readSpecificXML() {
-		
+	public void readXML(String treeTagName) {
+		this.treeTagName = treeTagName;
+		this.readXML();
+	}
+	private void read(NamedNodeMap namedNodeMap,JSONObject json, int cnt){
+		Node tmpNode = namedNodeMap.item(cnt);
+		if(tmpNode != null) {
+			json.put(tmpNode.getNodeName(), tmpNode.getTextContent());
+			this.read(namedNodeMap,json, ++cnt);
+		}
+	}
+	private void initDocument() throws XMLException, ParserConfigurationException, SAXException, IOException {
+		if(this.xmlPath == null)
+			throw new XMLException("XML does not exist!");
+		File xmlFile = new File(this.xmlPath);
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		dbFactory.setIgnoringComments(true);
+		DocumentBuilder dBuilder;
+		dBuilder = dbFactory.newDocumentBuilder();
+		dbFactory.setValidating(true);
+		this.document = dBuilder.parse(xmlFile);
+		this.document.getDocumentElement().normalize();
+	}
+	private NodeList initNodeList() {
+		NodeList nodeList = null;
+		if(this.treeTagName == null)
+			nodeList = this.document.getChildNodes();
+		else if(this.treeTagName != null) 
+			nodeList = this.document.getElementsByTagName(this.treeTagName);
+		return nodeList;
 	}
 	public void readXML() {
 		try {
-			if(this.xmlPath == null)
-				throw new XMLException("XML does not exist!");
-			File xmlFile = new File(this.xmlPath);
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			dbFactory.setIgnoringComments(true);
-			DocumentBuilder dBuilder;
-			NodeList nodeList;
-			dBuilder = dbFactory.newDocumentBuilder();
-			dbFactory.setValidating(true);
-			this.document = dBuilder.parse(xmlFile);
-			this.document.getDocumentElement().normalize();
-			if(this.treeTagName == null) {
-				nodeList = this.document.getChildNodes();
-				if(nodeList.getLength() == 0) 
-					throw new XMLException("the tag of the name deos not exist!");
-				else {
-					this.json = new JSONObject();
-					this.hashCodeList = new ArrayList<Integer>();
-					this.read(nodeList, new JSONObject(), 0);
-					this.json = this.json.getJSONObject(this.json.keys().next());
-				}
-			}
-			/*
+			this.initDocument();
+			NodeList nodeList = this.initNodeList();
+			if(nodeList.getLength() == 0) 
+				throw new XMLException("the tag of the name deos not exist!");
 			else {
-				if(this.treeTagName == null)
-					throw new XMLException("treeTagName is null!");
-				nodeList = this.document.getElementsByTagName(this.treeTagName);
+				this.json = new JSONObject();
+				this.hashCodeList = new ArrayList<Integer>();
+				this.read(nodeList, new JSONObject(), 0);
+				this.json = this.json.getJSONObject(this.json.keys().next());
 			}
-			*/
-		} catch (ParserConfigurationException e) {
+		} catch (XMLException | ParserConfigurationException | SAXException | IOException e) {
 			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (XMLException e) {
-			e.printStackTrace();
-		}
+		} 
 	}
 	private void findAndPut(JSONObject json, String pName, String name){
 		if(json.has(pName)){
@@ -144,6 +139,8 @@ public class XMLReader {
 			}
 			else if(tmpNode.getNodeType() != 3 && tmpNode.getTextContent() != null) {
 				pName = tmpNode.getParentNode().getNodeName();
+				if(this.json.length() == 0)
+					this.json.put(pName,new JSONObject());
 				this.findAndPut(this.json, pName, name);
 				if(!json.has(name)) {
 					json = new JSONObject();
@@ -190,13 +187,6 @@ public class XMLReader {
 			if(tmpJSON.has(name)){
 				tmpJSON.put(name, valJSON.get(name));	
 			}
-		}
-	}
-	private void read(NamedNodeMap namedNodeMap,JSONObject jsonObject, int cnt){
-		Node tmpNode = namedNodeMap.item(cnt);
-		if(tmpNode != null) {
-			jsonObject.put(tmpNode.getNodeName(), tmpNode.getTextContent());
-			this.read(namedNodeMap,jsonObject, ++cnt);
 		}
 	}
 	public String getXmlPath() {

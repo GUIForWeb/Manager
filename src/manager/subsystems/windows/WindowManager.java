@@ -1,4 +1,4 @@
-package manager.subsystems;
+package manager.subsystems.windows;
 
 import javax.swing.JFrame;
 

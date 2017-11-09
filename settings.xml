@@ -1,10 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE setting SYSTEM "settings.dtd">
-<settings>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><settings>
 	<directories>
-		<directory name="server">1</directory>
-		<directory name="sqlite">2</directory>
-		<directory name="storage">3</directory>
+		<directory name="server"/>
+		<directory name="sqlite"/>
+		<directory name="storage"></directory>
 	</directories>
 	<values>
 		<value name="a">a</value>
@@ -22,4 +20,3 @@
 		</valuez>
 	</values>
 </settings>
-
