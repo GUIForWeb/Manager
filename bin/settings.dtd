@@ -1,0 +1,5 @@
+<!ELEMENT settings ((directories|ip_address)+)>
+<!ELEMENT directories ((directory)+)>
+<!ELEMENT directory (#PCDATA)>
+<!ATTLIST directory name CDATA #REQUIRED>
+<!ELEMENT ip_address (#PCDATA)>
