@@ -10,7 +10,7 @@ public class SettingProp {
 	public static JSONObject json;
 	public static String ipAddress;
 	private static SettingProp instance;
-	public static SettingProp getInstance() {
+	public static SettingProp newInstance() {
 		if(null == instance) {
 			instance = new SettingProp();
 		}

@@ -46,7 +46,7 @@ public class WebGUIManagerView extends JFrame {
 	public WebGUIManagerView() {
 		this.sm = new SettingManager();
 		this.sm.loadDir();
-		WindowProp.getInstance();
+		WindowProp.newInstance();
 		WindowProp.webGUIView = this;
 		this.isExsistedIP = false;
 		this.initIPs();

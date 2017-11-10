@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 public class WindowProp {
 	public static JFrame webGUIView;
 	private static WindowProp instance;
-	public static WindowProp getInstance() {
+	public static WindowProp newInstance() {
 		if(null == instance) {
 			instance = new WindowProp();
 		}

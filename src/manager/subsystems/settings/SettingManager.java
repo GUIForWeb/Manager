@@ -34,7 +34,7 @@ public class SettingManager {
 	private File xmlFile;
 	private File dtdFile;
 	public SettingManager() {
-		SettingProp.getInstance();
+		SettingProp.newInstance();
 		SettingProp.managerDir = this.getClass().getClassLoader().getResource(".").getPath();
 		this.dtdPath = SettingProp.managerDir + "settings.dtd";
 		this.xmlPath = SettingProp.managerDir + "settings.xml";
