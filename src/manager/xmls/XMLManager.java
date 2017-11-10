@@ -1,10 +1,14 @@
 package manager.xmls;
 
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.json.JSONObject;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 public class XMLManager {
-	private Document document;
 	private XMLReader reader;
 	private XMLWriter writer;
 	private String xmlPath;
@@ -31,12 +35,11 @@ public class XMLManager {
 		this.reader.readXML();
 	}
 	private void initXML() {
-		this.document = this.reader.getDocument();
+		this.reader.initDocument();
 		this.reader.setTreeTagName(this.treeTagName);
 		this.writer.setXmlPath(this.xmlPath);
-		this.writer.setDocument(this.document);
+		this.writer.setDocument(this.reader.getDocument());
 	}
-	
 	public JSONObject getJSON(){
 		return this.reader.getJson();
 	}

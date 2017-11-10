@@ -6,15 +6,19 @@ import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -29,11 +33,6 @@ public class XMLWriter {
 	}
 	public XMLWriter(String xmlPath) {
 		this.xmlPath = xmlPath;
-		try {
-			this.readXML();
-		} catch (XMLException e) {
-			e.printStackTrace();
-		}
 	}
 	public void put(String tagName, String newText, String attr, String attrValue){
 		NodeList nodeList;
@@ -87,26 +86,6 @@ public class XMLWriter {
 			this.read(namedNodeMap, attr, attrValue, ++cnt);
 		}
 		return flag;
-	}
-	private void readXML() throws XMLException {
-		if(this.xmlPath == null)
-			throw new XMLException("XML does not exist!");
-		File xmlFile = new File(this.xmlPath);
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		dbFactory.setIgnoringComments(true);
-		DocumentBuilder dBuilder;
-		try {
-			dBuilder = dbFactory.newDocumentBuilder();
-			dbFactory.setValidating(true);
-			this.document = dBuilder.parse(xmlFile);
-			this.document.getDocumentElement().normalize();
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	public String getXmlPath() {
 		return xmlPath;

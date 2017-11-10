@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><settings>
+    <directories>
+        <directory name="server">/opt/WebGUI/opt/tomcat</directory>
+        <directory name="sqlite">/opt/WebGUI/opt/sqlite</directory>
+        <directory name="storage">/opt/WebGUI/home</directory>
+    </directories>
+    <ip_address>192.168.56.103</ip_address>
+</settings>

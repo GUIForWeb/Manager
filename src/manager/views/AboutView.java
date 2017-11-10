@@ -9,7 +9,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-import manager.subsystems.windows.WindowManager;
+import manager.subsystems.windows.WindowProp;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -22,8 +22,8 @@ public class AboutView extends JWindow {
 	private int x;
 	private int y;
 	public AboutView() {
-		this.x = (int) WindowManager.webGUIView.getLocation().getX() + (((int)WindowManager.webGUIView.getSize().getWidth() - this.oWidth)/2);
-		this.y = (int) WindowManager.webGUIView.getLocation().getY() + (((int)WindowManager.webGUIView.getSize().getHeight() - this.oHeight)/2);
+		this.x = (int) WindowProp.webGUIView.getLocation().getX() + (((int)WindowProp.webGUIView.getSize().getWidth() - this.oWidth)/2);
+		this.y = (int) WindowProp.webGUIView.getLocation().getY() + (((int)WindowProp.webGUIView.getSize().getHeight() - this.oHeight)/2);
 		this.initWindow();
 		this.initPanel();
 	}

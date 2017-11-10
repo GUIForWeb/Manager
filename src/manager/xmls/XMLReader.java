@@ -50,17 +50,22 @@ public class XMLReader {
 			this.read(namedNodeMap,json, ++cnt);
 		}
 	}
-	private void initDocument() throws XMLException, ParserConfigurationException, SAXException, IOException {
-		if(this.xmlPath == null)
-			throw new XMLException("XML does not exist!");
-		File xmlFile = new File(this.xmlPath);
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		dbFactory.setIgnoringComments(true);
-		DocumentBuilder dBuilder;
-		dBuilder = dbFactory.newDocumentBuilder();
-		dbFactory.setValidating(true);
-		this.document = dBuilder.parse(xmlFile);
-		this.document.getDocumentElement().normalize();
+	public void initDocument() {
+		try{	
+			if(this.xmlPath == null)
+				throw new XMLException("XML does not exist!");
+			File xmlFile = new File(this.xmlPath);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			dbFactory.setIgnoringComments(true);
+			DocumentBuilder dBuilder;
+			dBuilder = dbFactory.newDocumentBuilder();
+			dbFactory.setValidating(true);
+			this.document = dBuilder.parse(xmlFile);
+			this.document.getDocumentElement().normalize();
+		} catch (XMLException | ParserConfigurationException | SAXException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 	}
 	private NodeList initNodeList() {
 		NodeList nodeList = null;
@@ -72,7 +77,6 @@ public class XMLReader {
 	}
 	public void readXML() {
 		try {
-			this.initDocument();
 			NodeList nodeList = this.initNodeList();
 			if(nodeList.getLength() == 0) 
 				throw new XMLException("the tag of the name deos not exist!");
@@ -82,7 +86,7 @@ public class XMLReader {
 				this.read(nodeList, new JSONObject(), 0);
 				this.json = this.json.getJSONObject(this.json.keys().next());
 			}
-		} catch (XMLException | ParserConfigurationException | SAXException | IOException e) {
+		} catch (XMLException e) {
 			e.printStackTrace();
 		} 
 	}

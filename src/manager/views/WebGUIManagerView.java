@@ -9,7 +9,7 @@ import manager.modules.DirSettingDialog;
 import manager.msgs.Message;
 import manager.subsystems.settings.SettingManager;
 import manager.subsystems.settings.SettingProp;
-import manager.subsystems.windows.WindowManager;
+import manager.subsystems.windows.WindowProp;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -45,12 +45,9 @@ public class WebGUIManagerView extends JFrame {
 	private SettingManager sm;
 	public WebGUIManagerView() {
 		this.sm = new SettingManager();
-		/*
-		SettingManager.getInstance();
-		SettingManager.loadDir();
-		*/
-		WindowManager.getInstance();
-		WindowManager.webGUIView = this;
+		this.sm.loadDir();
+		WindowProp.getInstance();
+		WindowProp.webGUIView = this;
 		this.isExsistedIP = false;
 		this.initIPs();
 		this.initFrame();
@@ -143,11 +140,11 @@ public class WebGUIManagerView extends JFrame {
 		JButton btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(!msg.start()) {
+				if(!msg.start() && !msg.checkDirs() && !msg.checkFile()) {
 					SettingProp.ipAddress = (String) comboBox.getSelectedItem();
 					sm.saveIPAddress();
 					sm.saveServerXML();
-					//console(SettingManager.serverDir +"/bin/catalina.sh start");
+					console(SettingProp.serverDir +"/bin/catalina.sh start");
 				}
 			}
 		});
@@ -155,7 +152,9 @@ public class WebGUIManagerView extends JFrame {
 		JButton btnStop = new JButton("Stop");
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				console(SettingProp.serverDir +"/bin/catalina.sh stop 1");
+				if(!msg.start() && !msg.checkDirs() && !msg.checkFile()) {
+					console(SettingProp.serverDir +"/bin/catalina.sh stop 1");
+				}
 			}
 		});
 		
@@ -199,7 +198,6 @@ public class WebGUIManagerView extends JFrame {
 		try {
 			Process p = Runtime.getRuntime().exec(command);
 			BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
-	        String line = "";
 	        String tmpLine;
 	        this.isRunning = false;
 	        while (true) {
@@ -208,7 +206,6 @@ public class WebGUIManagerView extends JFrame {
 	            	break;
 	            }
 	            else {
-	            	line += tmpLine;
 	            	this.isRunning = true;
 	            }
 	        }

@@ -7,9 +7,10 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.border.EmptyBorder;
 
+import manager.msgs.Message;
 import manager.subsystems.settings.SettingManager;
 import manager.subsystems.settings.SettingProp;
-import manager.subsystems.windows.WindowManager;
+import manager.subsystems.windows.WindowProp;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -25,10 +26,12 @@ public class DirSettingView extends JDialog{
 	private int x;
 	private int y;
 	private SettingManager sm;
+	private Message msg;
 	public DirSettingView() {
-		this.x = (int) WindowManager.webGUIView.getLocation().getX();
-		this.y = (int) WindowManager.webGUIView.getLocation().getY() + 50;
+		this.x = (int) WindowProp.webGUIView.getLocation().getX();
+		this.y = (int) WindowProp.webGUIView.getLocation().getY() + 50;
 		this.sm = new SettingManager();
+		this.msg = new Message();
 		this.initFrame();
 		this.initPanel();
 		this.initialize();
@@ -61,7 +64,11 @@ public class DirSettingView extends JDialog{
 				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int response = fc.showOpenDialog(null);
 				if(response == JFileChooser.APPROVE_OPTION){
-					tFServerDir.setText(fc.getSelectedFile().toString());
+					String path = fc.getSelectedFile().toString();
+					if(!msg.checkRoot(path))
+						tFServerDir.setText(fc.getSelectedFile().toString());
+					else
+						btnOpenBrowser0.doClick();
 				}
 			}
 		});
@@ -81,7 +88,11 @@ public class DirSettingView extends JDialog{
 				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int response = fc.showOpenDialog(null);
 				if(response == JFileChooser.APPROVE_OPTION){
-					tFStorageDir.setText(fc.getSelectedFile().toString());
+					String path = fc.getSelectedFile().toString();
+					if(!msg.checkRoot(path))
+						tFStorageDir.setText(fc.getSelectedFile().toString());
+					else
+						btnOpenBrowser0.doClick();
 				}
 			}
 		});
@@ -106,7 +117,11 @@ public class DirSettingView extends JDialog{
 				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int response = fc.showOpenDialog(null);
 				if(response == JFileChooser.APPROVE_OPTION){
-					tFSQLiteDir.setText(fc.getSelectedFile().toString());
+					String path = fc.getSelectedFile().toString();
+					if(!msg.checkRoot(path))
+						tFSQLiteDir.setText(fc.getSelectedFile().toString());
+					else
+						btnOpenBrowser0.doClick();
 				}
 			}
 		});
