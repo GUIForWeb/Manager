@@ -15,7 +15,7 @@
 	<classpathentry kind="lib" path="/opt/eclipse/plugins/org.eclipse.ui.workbench_3.108.3.v20170216-1539.jar" sourcepath="/opt/eclipse/plugins/org.eclipse.ui.workbench_3.108.3.v20170216-1539.jar"/>
 	<classpathentry kind="lib" path="/opt/eclipse/plugins/com.ibm.icu_56.1.0.v201601250100.jar" sourcepath="/opt/eclipse/plugins/com.ibm.icu_56.1.0.v201601250100.jar"/>
 	<classpathentry kind="lib" path="/opt/eclipse/plugins/org.eclipse.ui.forms_3.7.1.v20161220-1635.jar" sourcepath="/opt/eclipse/plugins/org.eclipse.ui.forms_3.7.1.v20161220-1635.jar"/>
-	<classpathentry kind="lib" path="/root/workspace/WebGUI/WebContent/WEB-INF/lib/json-20170516.jar"/>
+	<classpathentry kind="lib" path="/opt/WebGUI/opt/WebGUIManager/json-20170516.jar"/>
 	<classpathentry kind="lib" path="miglayout15-swing.jar" sourcepath="miglayout-src.zip"/>
 	<classpathentry kind="lib" path="/opt/WebGUI/opt/WebGUIManager/xercesImpl-2.11.0.jar"/>
 	<classpathentry kind="lib" path="/opt/WebGUI/opt/WebGUIManager/xml-apis.jar"/>
