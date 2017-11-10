@@ -59,9 +59,13 @@ public class XMLWriter {
 	}
 	public void save(){
 		try {
+			this.document.setXmlStandalone(true);
+			Source input = new DOMSource(this.document);
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			StreamResult output = new StreamResult(new File(this.xmlPath));
-			Source input = new DOMSource(this.document);
+			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+			transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "settings.dtd");
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			transformer.transform(input, output);
 		} catch (TransformerFactoryConfigurationError | TransformerException e) {
 			// TODO Auto-generated catch block

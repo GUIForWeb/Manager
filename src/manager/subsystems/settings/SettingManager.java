@@ -40,11 +40,11 @@ public class SettingManager {
 		this.xmlPath = SettingProp.managerDir + "settings.xml";
 		this.dtdFile = new File(this.dtdPath);
 		this.xmlFile = new File(this.xmlPath);
-		this.xmlManager = new XMLManager(this.xmlPath);
 		if(!this.dtdFile.exists())
 			this.makeDTD();
 		if(!this.xmlFile.exists())
 			this.makeXML();
+		this.xmlManager = new XMLManager(this.xmlPath);
 	}
 	private void makeDTD() {
 		try {
