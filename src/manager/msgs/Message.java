@@ -42,13 +42,8 @@ public class Message {
 	}
 	public boolean checkFile() {
 		boolean flag = false;
-		String filePath = "";
-		if(System.getProperty("os.name").equals("Linux"))
-			filePath = SettingProp.serverDir +"/bin/catalina.sh";
-		else if(System.getProperty("os.name").equals("Windows"))
-			filePath = SettingProp.serverDir +"/bin/catalina.bat";
 		String msgs = "";
-		if(!new File(filePath).exists()) {
+		if(!new File(SettingProp.serverExePath).exists()) {
 			msgs += "The excution file does not exist"; 
 			flag = true;
 		}

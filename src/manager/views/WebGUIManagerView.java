@@ -144,7 +144,7 @@ public class WebGUIManagerView extends JFrame {
 					SettingProp.ipAddress = (String) comboBox.getSelectedItem();
 					sm.saveIPAddress();
 					sm.saveServerXML();
-					console(SettingProp.serverDir +"/bin/catalina.sh start");
+					console(SettingProp.serverExePath+" start");
 				}
 			}
 		});
@@ -153,7 +153,7 @@ public class WebGUIManagerView extends JFrame {
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(!msg.start() && !msg.checkDirs() && !msg.checkFile()) {
-					console(SettingProp.serverDir +"/bin/catalina.sh stop 1");
+					console(SettingProp.serverExePath+" stop 1");
 				}
 			}
 		});

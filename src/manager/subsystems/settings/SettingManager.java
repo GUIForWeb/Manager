@@ -151,6 +151,10 @@ public class SettingManager {
 			SettingProp.serverDir = json.getString("server");
 			SettingProp.sqliteDir = json.getString("sqlite");
 			SettingProp.storageDir = json.getString("storage");
+			if(System.getProperty("os.name").equals("Linux"))
+				SettingProp.serverExePath = SettingProp.serverDir +"/bin/catalina.sh";
+			else if(System.getProperty("os.name").equals("Windows"))
+				SettingProp.serverExePath = SettingProp.serverDir +"\\bin\\catalina.bat";
 		}
 	}
 	public void loadIPAddress() {

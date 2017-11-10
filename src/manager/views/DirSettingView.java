@@ -66,7 +66,7 @@ public class DirSettingView extends JDialog{
 				if(response == JFileChooser.APPROVE_OPTION){
 					String path = fc.getSelectedFile().toString();
 					if(!msg.checkRoot(path))
-						tFServerDir.setText(fc.getSelectedFile().toString());
+						tFServerDir.setText(fc.getSelectedFile().toString()+System.getProperty("file.separator"));
 					else
 						btnOpenBrowser0.doClick();
 				}
@@ -90,14 +90,14 @@ public class DirSettingView extends JDialog{
 				if(response == JFileChooser.APPROVE_OPTION){
 					String path = fc.getSelectedFile().toString();
 					if(!msg.checkRoot(path))
-						tFStorageDir.setText(fc.getSelectedFile().toString());
+						tFStorageDir.setText(fc.getSelectedFile().toString()+System.getProperty("file.separator"));
 					else
 						btnOpenBrowser0.doClick();
 				}
 			}
 		});
 		contentPane.add(btnOpenBrowser1, "cell 3 5,grow");
-		JLabel lblSqliteDirectory = new JLabel("Sqlite Directory");
+		JLabel lblSqliteDirectory = new JLabel("Sqlite File");
 		contentPane.add(lblSqliteDirectory, "cell 0 6,grow");
 		
 		JTextField tFSQLiteDir = new JTextField();
@@ -114,7 +114,6 @@ public class DirSettingView extends JDialog{
 		btnOpenBrowser2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				final JFileChooser fc = new JFileChooser();
-				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int response = fc.showOpenDialog(null);
 				if(response == JFileChooser.APPROVE_OPTION){
 					String path = fc.getSelectedFile().toString();

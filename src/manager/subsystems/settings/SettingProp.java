@@ -7,6 +7,7 @@ public class SettingProp {
 	public static String sqliteDir;
 	public static String managerDir;
 	public static String serverDir;
+	public static String serverExePath;
 	public static JSONObject json;
 	public static String ipAddress;
 	private static SettingProp instance;
