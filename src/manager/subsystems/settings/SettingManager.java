@@ -81,7 +81,6 @@ public class SettingManager {
 		}
 	}
 	private void newXML() {
-		String webGUIFolder = SettingProp.managerDir.replace("opt/WebGUIManager/bin/", "");
 		try {
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder;
@@ -95,19 +94,16 @@ public class SettingManager {
 			Attr attr = doc.createAttribute("name");
 			attr.setValue("server");
 			dirElm.setAttributeNode(attr);
-			dirElm.appendChild(doc.createTextNode(webGUIFolder+"opt/tomcat"));
 			dirsElm.appendChild(dirElm);
 			dirElm = doc.createElement("directory");
 			attr = doc.createAttribute("name");
 			attr.setValue("sqlite");
 			dirElm.setAttributeNode(attr);
-			dirElm.appendChild(doc.createTextNode(webGUIFolder+"opt/sqlite"));
 			dirsElm.appendChild(dirElm);
 			dirElm = doc.createElement("directory");
 			attr = doc.createAttribute("name");
 			attr.setValue("storage");
 			dirElm.setAttributeNode(attr);
-			dirElm.appendChild(doc.createTextNode(webGUIFolder+"home"));
 			dirsElm.appendChild(dirElm);
 			Element ipElm = doc.createElement("ip_address");
 			setsElm.appendChild(dirsElm);
