@@ -6,7 +6,7 @@
 * Date: December 5, 2016
 * Description: XML exception class
 ****************************************************************************************************/
-package manager.xmls;
+package system.xmls;
 
 public class XMLException extends Exception{
 	

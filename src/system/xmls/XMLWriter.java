@@ -1,4 +1,4 @@
-package manager.xmls;
+package system.xmls;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import manager.xmls.XMLWriter;
+import system.xmls.XMLWriter;
 
 public class XMLWriter {
 	private Document document;

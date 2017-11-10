@@ -1,4 +1,4 @@
-package manager.xmls;
+package system.xmls;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,8 +17,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import manager.xmls.XMLException;
-import manager.xmls.XMLReader;
+import system.xmls.XMLException;
+import system.xmls.XMLReader;
 
 public class XMLReader {
 	private Document document;

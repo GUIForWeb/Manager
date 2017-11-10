@@ -22,7 +22,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import manager.xmls.XMLManager;
+import system.xmls.XMLManager;
 
 import org.apache.commons.io.FileUtils;
 
