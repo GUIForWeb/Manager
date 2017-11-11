@@ -7,8 +7,9 @@ import javax.swing.border.EmptyBorder;
 import manager.modules.AboutWindow;
 import manager.modules.DirSettingDialog;
 import manager.msgs.Message;
+import manager.subsystems.paths.Path;
+import manager.subsystems.paths.PathManager;
 import manager.subsystems.settings.SettingManager;
-import manager.subsystems.settings.SettingProp;
 import manager.subsystems.windows.WindowProp;
 
 import javax.swing.JMenuBar;
@@ -71,9 +72,9 @@ public class WebGUIManagerView extends JFrame {
 		            tmpIpList.add(addr.getHostAddress());
 		        }
 		    }
-		    if(null != SettingProp.ipAddress)
-		    if(!tmpIpList.contains(SettingProp.ipAddress))
-		    	this.ipList.add(SettingProp.ipAddress);
+		    if(null != Path.ipAddress)
+		    if(!tmpIpList.contains(Path.ipAddress))
+		    	this.ipList.add(Path.ipAddress);
 		    else
 		    	this.isExsistedIP = true;
 		    this.ipList.addAll(tmpIpList);
@@ -122,17 +123,17 @@ public class WebGUIManagerView extends JFrame {
 	}
 	private void initMain() {
 		this.lblNewLabel = new JLabel("");
-		this.lblNewLabel.setIcon(new ImageIcon(SettingProp.managerDir+"/../imgs/off.png"));
+		this.lblNewLabel.setIcon(new ImageIcon(Path.imgOff));
 		JLabel lblIpAddress = new JLabel("IP Address for Online Account");
 		JComboBox<Object> comboBox = new JComboBox<Object>();
 		comboBox.setModel(new DefaultComboBoxModel<Object>(this.ipList.toArray(new String[this.ipList.size()])));
 		comboBox.setMaximumRowCount(this.ipList.size());
 		comboBox.setEditable(true);
 		if(this.isExsistedIP) 
-			comboBox.setSelectedItem(SettingProp.ipAddress);
+			comboBox.setSelectedItem(Path.ipAddress);
 		comboBox.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
-		    	SettingProp.ipAddress = (String) comboBox.getSelectedItem();
+		    	Path.ipAddress = (String) comboBox.getSelectedItem();
 		    	sm.saveIPAddress();
 		    }
 		});
@@ -141,10 +142,10 @@ public class WebGUIManagerView extends JFrame {
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(!msg.start() && !msg.checkDirs() && !msg.checkFile()) {
-					SettingProp.ipAddress = (String) comboBox.getSelectedItem();
+					Path.ipAddress = (String) comboBox.getSelectedItem();
 					sm.saveIPAddress();
 					sm.saveServerXML();
-					console(SettingProp.serverExePath+" start");
+					console(Path.serverExe+" start");
 				}
 			}
 		});
@@ -153,7 +154,7 @@ public class WebGUIManagerView extends JFrame {
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(!msg.start() && !msg.checkDirs() && !msg.checkFile()) {
-					console(SettingProp.serverExePath+" stop 1");
+					console(Path.serverExe+" stop 1");
 				}
 			}
 		});
@@ -210,10 +211,10 @@ public class WebGUIManagerView extends JFrame {
 	            }
 	        }
 	        if(isRunning){
-	        	this.lblNewLabel.setIcon(new ImageIcon(SettingProp.managerDir+"/../imgs/on.png"));
+	        	this.lblNewLabel.setIcon(new ImageIcon(Path.imgOn));
 	        }
 	        else {
-	        	this.lblNewLabel.setIcon(new ImageIcon(SettingProp.managerDir+"/../imgs/off.png"));
+	        	this.lblNewLabel.setIcon(new ImageIcon(Path.imgOff));
 	        }
 		} catch (IOException e) {
 			e.printStackTrace();

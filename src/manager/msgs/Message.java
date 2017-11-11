@@ -4,7 +4,7 @@ import java.io.File;
 
 import javax.swing.JOptionPane;
 
-import manager.subsystems.settings.SettingProp;
+import manager.subsystems.paths.Path;
 
 public class Message {
 	public Message(){
@@ -12,16 +12,16 @@ public class Message {
 	public boolean start() {
 		boolean flag = false;
 		String msgs = "";
-		if(SettingProp.serverDir == null || SettingProp.serverDir.equals("")) {
+		if(Path.serverDir == null || Path.serverDir.equals("")) {
 			msgs += "You need to set a server directory."; 
 			flag = true;
 		}
-		if(SettingProp.sqliteDir == null || SettingProp.sqliteDir.equals("")) {
+		if(Path.sqliteDir == null || Path.sqliteDir.equals("")) {
 			if(!msgs.equals("")) msgs += System.getProperty("line.separator");
 			msgs += "You need to set a sqlite directory.";
 			flag = true;
 		}
-		if(SettingProp.storageDir == null || SettingProp.storageDir.equals("")) {
+		if(Path.storageDir == null || Path.storageDir.equals("")) {
 			if(!msgs.equals("")) msgs += System.getProperty("line.separator");
 			msgs += "You need to set a storage directory.";
 			flag = true;
@@ -33,7 +33,7 @@ public class Message {
 	public boolean checkRoot(String path) {
 		boolean flag = false;
 		String msgs = "";
-		if(path.equals("/")) { 
+		if(path.equals(Path.root)) { 
 			msgs += "Root is not accepted for a directory path!"; 
 			flag = true;
 		}
@@ -43,7 +43,7 @@ public class Message {
 	public boolean checkFile() {
 		boolean flag = false;
 		String msgs = "";
-		if(!new File(SettingProp.serverExePath).exists()) {
+		if(!new File(Path.serverExe).exists()) {
 			msgs += "The excution file does not exist"; 
 			flag = true;
 		}
@@ -53,16 +53,16 @@ public class Message {
 	public boolean checkDirs() {
 		boolean flag = false;
 		String msgs = "";
-		if(!new File(SettingProp.serverDir).exists()) {
+		if(!new File(Path.serverDir).exists()) {
 			msgs += "The server directory does not exist"; 
 			flag = true;
 		}
-		if(!new File(SettingProp.sqliteDir).exists()) {
+		if(!new File(Path.sqliteDir).exists()) {
 			if(!msgs.equals("")) msgs += System.getProperty("line.separator");
 			msgs += "The sqlite directory does not exist";
 			flag = true;
 		}
-		if(!new File(SettingProp.storageDir).exists()) {
+		if(!new File(Path.storageDir).exists()) {
 			if(!msgs.equals("")) msgs += System.getProperty("line.separator");
 			msgs += "The storage directory does not exist";
 			flag = true;

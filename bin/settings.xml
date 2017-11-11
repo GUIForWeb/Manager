@@ -6,5 +6,5 @@
         <directory name="sqlite"/>
         <directory name="storage"/>
     </directories>
-    <ip_address/>
+    <ip_address>192.168.56.103</ip_address>
 </settings>

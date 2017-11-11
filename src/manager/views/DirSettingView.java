@@ -8,8 +8,8 @@ import javax.swing.JFileChooser;
 import javax.swing.border.EmptyBorder;
 
 import manager.msgs.Message;
+import manager.subsystems.paths.Path;
 import manager.subsystems.settings.SettingManager;
-import manager.subsystems.settings.SettingProp;
 import manager.subsystems.windows.WindowProp;
 
 import javax.swing.JLabel;
@@ -45,7 +45,7 @@ public class DirSettingView extends JDialog{
 		JTextField tFManagerDir = new JTextField();
 		tFManagerDir.setText((String) null);
 		tFManagerDir.setColumns(10);
-		tFManagerDir.setText(SettingProp.managerDir);
+		tFManagerDir.setText(Path.managerDir);
 		contentPane.add(tFManagerDir, "cell 0 1 3 1,grow");
 		
 		JLabel lblServerDirectory = new JLabel("Server Directory");
@@ -54,7 +54,7 @@ public class DirSettingView extends JDialog{
 		JTextField tFServerDir = new JTextField();
 		tFServerDir.setText((String) null);
 		tFServerDir.setColumns(10);
-		tFServerDir.setText(SettingProp.serverDir);
+		tFServerDir.setText(Path.serverDir);
 		contentPane.add(tFServerDir, "cell 0 3 3 1,grow");
 		
 		JButton btnOpenBrowser0 = new JButton("Open Browser");
@@ -78,7 +78,7 @@ public class DirSettingView extends JDialog{
 		contentPane.add(lblStorageDirectory, "cell 0 4,grow");
 		JTextField tFStorageDir = new JTextField();
 		tFStorageDir.setColumns(10);
-		tFStorageDir.setText(SettingProp.storageDir);
+		tFStorageDir.setText(Path.storageDir);
 		contentPane.add(tFStorageDir, "cell 0 5 3 1,grow");
 		
 		JButton btnOpenBrowser1 = new JButton("Open Browser");
@@ -102,7 +102,7 @@ public class DirSettingView extends JDialog{
 		
 		JTextField tFSQLiteDir = new JTextField();
 		tFSQLiteDir.setColumns(10);
-		tFSQLiteDir.setText(SettingProp.sqliteDir);
+		tFSQLiteDir.setText(Path.sqliteDir);
 		contentPane.add(tFSQLiteDir, "cell 0 7 3 1,grow");
 		JButton btnClose = new JButton("Close");
 		btnClose.addActionListener(new ActionListener() {
@@ -130,9 +130,9 @@ public class DirSettingView extends JDialog{
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SettingProp.serverDir = tFServerDir.getText();
-				SettingProp.storageDir = tFStorageDir.getText();
-				SettingProp.sqliteDir = tFSQLiteDir.getText();
+				Path.serverDir = tFServerDir.getText();
+				Path.storageDir = tFStorageDir.getText();
+				Path.sqliteDir = tFSQLiteDir.getText();
 				sm.saveDir();
 			}
 		});

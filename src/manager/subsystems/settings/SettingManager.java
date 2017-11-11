@@ -22,29 +22,28 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import manager.subsystems.paths.Path;
+import manager.subsystems.paths.PathManager;
 import system.xmls.XMLManager;
 
 import org.apache.commons.io.FileUtils;
 
 public class SettingManager {
 	private XMLManager xmlManager;
+	private PathManager pm;
 	private JSONObject json;
-	private String dtdPath;
-	private String xmlPath;
 	private File xmlFile;
 	private File dtdFile;
 	public SettingManager() {
-		SettingProp.newInstance();
-		SettingProp.managerDir = this.getClass().getClassLoader().getResource(".").getPath();
-		this.dtdPath = SettingProp.managerDir + "settings.dtd";
-		this.xmlPath = SettingProp.managerDir + "settings.xml";
-		this.dtdFile = new File(this.dtdPath);
-		this.xmlFile = new File(this.xmlPath);
+		Path.newInstance();
+		this.pm = new PathManager();
+		this.dtdFile = new File(Path.dtd);
+		this.xmlFile = new File(Path.xml);
 		if(!this.dtdFile.exists())
 			this.makeDTD();
 		if(!this.xmlFile.exists())
 			this.makeXML();
-		this.xmlManager = new XMLManager(this.xmlPath);
+		this.xmlManager = new XMLManager(Path.xml);
 	}
 	private void makeDTD() {
 		try {
@@ -74,7 +73,7 @@ public class SettingManager {
 		dtdStr += System.getProperty("line.separator");
 		dtdStr += "<!ELEMENT ip_address (#PCDATA)>";
 		try {
-			PrintStream out = new PrintStream(new FileOutputStream(this.dtdPath));
+			PrintStream out = new PrintStream(new FileOutputStream(Path.dtd));
 			out.print(dtdStr);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -111,7 +110,7 @@ public class SettingManager {
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File(this.xmlPath));
+			StreamResult result = new StreamResult(new File(Path.xml));
 			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "settings.dtd");
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -123,7 +122,7 @@ public class SettingManager {
 	}
 	public void loadXML() {
 		JSONObject tmpJSON;
-		this.xmlManager = new XMLManager(this.xmlPath);
+		this.xmlManager = new XMLManager(Path.xml);
 		this.xmlManager.read("directory");
 		JSONArray jArr;
 		if(xmlManager.getJSON().has("directory")){
@@ -144,24 +143,20 @@ public class SettingManager {
 	public void loadDir() {
 		this.loadXML();
 		if(this.json != null) {
-			SettingProp.serverDir = json.getString("server");
-			SettingProp.sqliteDir = json.getString("sqlite");
-			SettingProp.storageDir = json.getString("storage");
-			if(System.getProperty("os.name").equals("Linux"))
-				SettingProp.serverExePath = SettingProp.serverDir +"/bin/catalina.sh";
-			else if(System.getProperty("os.name").equals("Windows"))
-				SettingProp.serverExePath = SettingProp.serverDir +"\\bin\\catalina.bat";
+			Path.serverDir = json.getString("server");
+			Path.sqliteDir = json.getString("sqlite");
+			Path.storageDir = json.getString("storage");
+			this.pm.init();
 		}
 	}
 	public void loadIPAddress() {
 		if(this.json != null && this.json.has("ip_address") && !this.json.getString("ip_address").equals("")){
-			SettingProp.ipAddress = this.json.getString("ip_address");
+			Path.ipAddress = this.json.getString("ip_address");
 		}
 	}
 	public void saveServerXML() {
-		String serverXMLPath = SettingProp.serverDir + "/webapps/WebGUI/WEB-INF/settings.xml";
-		File f0 = new File(this.xmlPath);
-		File f1 = new File(serverXMLPath);
+		File f0 = new File(Path.xml);
+		File f1 = new File(Path.serverXML);
 		try {
 			if(!FileUtils.contentEquals(f0,f1))
 				FileUtils.copyFile(f0, f1);
@@ -172,14 +167,15 @@ public class SettingManager {
 	public void saveIPAddress() {
 		if(null == this.json)
 			json = new JSONObject();
-		this.json.put("ip_address", SettingProp.ipAddress);
-		this.xmlManager.put("ip_address", SettingProp.ipAddress);
+		this.json.put("ip_address", Path.ipAddress);
+		this.xmlManager.put("ip_address", Path.ipAddress);
 		this.xmlManager.save();
 	}
 	public void saveDir() {
-		this.xmlManager.put("directory", SettingProp.serverDir, "name", "server");
-		this.xmlManager.put("directory", SettingProp.sqliteDir, "name", "sqlite");
-		this.xmlManager.put("directory", SettingProp.storageDir, "name", "storage");
+		this.xmlManager.put("directory", Path.serverDir, "name", "server");
+		this.xmlManager.put("directory", Path.sqliteDir, "name", "sqlite");
+		this.xmlManager.put("directory", Path.storageDir, "name", "storage");
 		this.xmlManager.save();
+		this.pm.init();
 	}
 }
