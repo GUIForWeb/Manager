@@ -9,6 +9,15 @@ import manager.subsystems.paths.Path;
 public class Message {
 	public Message(){
 	}
+	public boolean java() {
+		boolean flag =false;
+		String msgs = "";
+		if(System.getProperty("java.home") == null || System.getProperty("java.home").equals("")) {
+			msgs += "JAVA does not exist!"; 
+			flag = true;
+		}
+		return flag;
+	}
 	public boolean start() {
 		boolean flag = false;
 		String msgs = "";
@@ -16,7 +25,7 @@ public class Message {
 			msgs += "You need to set a server directory."; 
 			flag = true;
 		}
-		if(Path.sqliteDir == null || Path.sqliteDir.equals("")) {
+		if(Path.sqliteFile == null || Path.sqliteFile.equals("")) {
 			if(!msgs.equals("")) msgs += System.getProperty("line.separator");
 			msgs += "You need to set a sqlite directory.";
 			flag = true;
@@ -43,7 +52,7 @@ public class Message {
 	public boolean checkFile() {
 		boolean flag = false;
 		String msgs = "";
-		if(!new File(Path.serverExe).exists()) {
+		if(!new File(Path.serverExeFile).exists()) {
 			msgs += "The excution file does not exist"; 
 			flag = true;
 		}
@@ -57,7 +66,7 @@ public class Message {
 			msgs += "The server directory does not exist"; 
 			flag = true;
 		}
-		if(!new File(Path.sqliteDir).exists()) {
+		if(!new File(Path.sqliteFile).exists()) {
 			if(!msgs.equals("")) msgs += System.getProperty("line.separator");
 			msgs += "The sqlite directory does not exist";
 			flag = true;

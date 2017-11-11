@@ -2,9 +2,9 @@
 <!DOCTYPE settings SYSTEM "settings.dtd">
 <settings>
     <directories>
-        <directory name="server"/>
-        <directory name="sqlite"/>
-        <directory name="storage"/>
+        <directory name="serverDir">/opt/WebGUI/opt/tomcat/</directory>
+        <directory name="storageDir">/opt/WebGUI/home/</directory>
+        <directory name="sqliteFile">/opt/WebGUI/opt/sqlite/WebGUI.db</directory>
     </directories>
     <ip_address>192.168.56.103</ip_address>
 </settings>

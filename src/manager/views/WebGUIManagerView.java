@@ -7,8 +7,8 @@ import javax.swing.border.EmptyBorder;
 import manager.modules.AboutWindow;
 import manager.modules.DirSettingDialog;
 import manager.msgs.Message;
+import manager.subsystem.commands.Cmd;
 import manager.subsystems.paths.Path;
-import manager.subsystems.paths.PathManager;
 import manager.subsystems.settings.SettingManager;
 import manager.subsystems.windows.WindowProp;
 
@@ -27,6 +27,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.awt.event.ActionEvent;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -123,7 +124,7 @@ public class WebGUIManagerView extends JFrame {
 	}
 	private void initMain() {
 		this.lblNewLabel = new JLabel("");
-		this.lblNewLabel.setIcon(new ImageIcon(Path.imgOff));
+		this.lblNewLabel.setIcon(new ImageIcon(Path.offImgFile));
 		JLabel lblIpAddress = new JLabel("IP Address for Online Account");
 		JComboBox<Object> comboBox = new JComboBox<Object>();
 		comboBox.setModel(new DefaultComboBoxModel<Object>(this.ipList.toArray(new String[this.ipList.size()])));
@@ -145,7 +146,7 @@ public class WebGUIManagerView extends JFrame {
 					Path.ipAddress = (String) comboBox.getSelectedItem();
 					sm.saveIPAddress();
 					sm.saveServerXML();
-					console(Path.serverExe+" start");
+					console(Cmd.start);
 				}
 			}
 		});
@@ -154,7 +155,7 @@ public class WebGUIManagerView extends JFrame {
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(!msg.start() && !msg.checkDirs() && !msg.checkFile()) {
-					console(Path.serverExe+" stop 1");
+					console(Cmd.stop);
 				}
 			}
 		});
@@ -195,29 +196,38 @@ public class WebGUIManagerView extends JFrame {
 		);
 		this.contentPane.setLayout(gl_contentPane);
 	}
-	private void console(String command) {
-		try {
-			Process p = Runtime.getRuntime().exec(command);
-			BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
-	        String tmpLine;
-	        this.isRunning = false;
-	        while (true) {
-	        	tmpLine = r.readLine();
-	            if (tmpLine == null) {
-	            	break;
-	            }
-	            else {
-	            	this.isRunning = true;
-	            }
-	        }
-	        if(isRunning){
-	        	this.lblNewLabel.setIcon(new ImageIcon(Path.imgOn));
-	        }
-	        else {
-	        	this.lblNewLabel.setIcon(new ImageIcon(Path.imgOff));
-	        }
-		} catch (IOException e) {
-			e.printStackTrace();
+	private void console(List<String> cmd) {
+		Message msg = new Message();
+		if(!msg.java()) {
+			try {
+				ProcessBuilder builder = new ProcessBuilder(cmd);
+				builder.redirectErrorStream(true);
+				Map<String, String> envs = builder.environment();
+				envs.put("CATALINA_HOME",Path.serverDir);
+				envs.put("JAVA_HOME",System.getProperty("java.home"));
+				Process process = builder.start();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		        String tmpLine;
+		        this.isRunning = false;
+		        while (true) {
+		        	tmpLine = reader.readLine();
+		            if (tmpLine == null) {
+		            	break;
+		            }
+		            else {
+		            	this.isRunning = true;
+		            }
+		        }
+		        if(isRunning){
+		        	this.lblNewLabel.setIcon(new ImageIcon(Path.onImgFile));
+		        }
+		        else {
+		        	this.lblNewLabel.setIcon(new ImageIcon(Path.offImgFile));
+		        }
+		        
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

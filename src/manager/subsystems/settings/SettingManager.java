@@ -22,6 +22,8 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import manager.subsystem.commands.Cmd;
+import manager.subsystem.commands.CmdManager;
 import manager.subsystems.paths.Path;
 import manager.subsystems.paths.PathManager;
 import system.xmls.XMLManager;
@@ -31,19 +33,22 @@ import org.apache.commons.io.FileUtils;
 public class SettingManager {
 	private XMLManager xmlManager;
 	private PathManager pm;
+	private CmdManager cm;
 	private JSONObject json;
 	private File xmlFile;
 	private File dtdFile;
 	public SettingManager() {
 		Path.newInstance();
+		Cmd.newInstance();
 		this.pm = new PathManager();
-		this.dtdFile = new File(Path.dtd);
-		this.xmlFile = new File(Path.xml);
+		this.cm = new CmdManager();
+		this.dtdFile = new File(Path.dtdFile);
+		this.xmlFile = new File(Path.xmlFile);
 		if(!this.dtdFile.exists())
 			this.makeDTD();
 		if(!this.xmlFile.exists())
 			this.makeXML();
-		this.xmlManager = new XMLManager(Path.xml);
+		this.xmlManager = new XMLManager(Path.xmlFile);
 	}
 	private void makeDTD() {
 		try {
@@ -73,7 +78,7 @@ public class SettingManager {
 		dtdStr += System.getProperty("line.separator");
 		dtdStr += "<!ELEMENT ip_address (#PCDATA)>";
 		try {
-			PrintStream out = new PrintStream(new FileOutputStream(Path.dtd));
+			PrintStream out = new PrintStream(new FileOutputStream(Path.dtdFile));
 			out.print(dtdStr);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -91,17 +96,17 @@ public class SettingManager {
 			Element dirsElm = doc.createElement("directories");
 			Element dirElm = doc.createElement("directory");
 			Attr attr = doc.createAttribute("name");
-			attr.setValue("server");
+			attr.setValue("serverDir");
 			dirElm.setAttributeNode(attr);
 			dirsElm.appendChild(dirElm);
 			dirElm = doc.createElement("directory");
 			attr = doc.createAttribute("name");
-			attr.setValue("sqlite");
+			attr.setValue("storageDir");
 			dirElm.setAttributeNode(attr);
 			dirsElm.appendChild(dirElm);
 			dirElm = doc.createElement("directory");
 			attr = doc.createAttribute("name");
-			attr.setValue("storage");
+			attr.setValue("sqliteFile");
 			dirElm.setAttributeNode(attr);
 			dirsElm.appendChild(dirElm);
 			Element ipElm = doc.createElement("ip_address");
@@ -110,7 +115,7 @@ public class SettingManager {
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File(Path.xml));
+			StreamResult result = new StreamResult(new File(Path.xmlFile));
 			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "settings.dtd");
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -122,7 +127,7 @@ public class SettingManager {
 	}
 	public void loadXML() {
 		JSONObject tmpJSON;
-		this.xmlManager = new XMLManager(Path.xml);
+		this.xmlManager = new XMLManager(Path.xmlFile);
 		this.xmlManager.read("directory");
 		JSONArray jArr;
 		if(xmlManager.getJSON().has("directory")){
@@ -143,10 +148,11 @@ public class SettingManager {
 	public void loadDir() {
 		this.loadXML();
 		if(this.json != null) {
-			Path.serverDir = json.getString("server");
-			Path.sqliteDir = json.getString("sqlite");
-			Path.storageDir = json.getString("storage");
+			Path.serverDir = json.getString("serverDir");
+			Path.storageDir = json.getString("storageDir");
+			Path.sqliteFile = json.getString("sqliteFile");
 			this.pm.init();
+			this.cm.init();
 		}
 	}
 	public void loadIPAddress() {
@@ -155,8 +161,8 @@ public class SettingManager {
 		}
 	}
 	public void saveServerXML() {
-		File f0 = new File(Path.xml);
-		File f1 = new File(Path.serverXML);
+		File f0 = new File(Path.xmlFile);
+		File f1 = new File(Path.serverXMLFile);
 		try {
 			if(!FileUtils.contentEquals(f0,f1))
 				FileUtils.copyFile(f0, f1);
@@ -172,9 +178,9 @@ public class SettingManager {
 		this.xmlManager.save();
 	}
 	public void saveDir() {
-		this.xmlManager.put("directory", Path.serverDir, "name", "server");
-		this.xmlManager.put("directory", Path.sqliteDir, "name", "sqlite");
-		this.xmlManager.put("directory", Path.storageDir, "name", "storage");
+		this.xmlManager.put("directory", Path.serverDir, "name", "serverDir");
+		this.xmlManager.put("directory", Path.storageDir, "name", "storageDir");
+		this.xmlManager.put("directory", Path.sqliteFile, "name", "sqliteFile");
 		this.xmlManager.save();
 		this.pm.init();
 	}

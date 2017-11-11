@@ -102,7 +102,7 @@ public class DirSettingView extends JDialog{
 		
 		JTextField tFSQLiteDir = new JTextField();
 		tFSQLiteDir.setColumns(10);
-		tFSQLiteDir.setText(Path.sqliteDir);
+		tFSQLiteDir.setText(Path.sqliteFile);
 		contentPane.add(tFSQLiteDir, "cell 0 7 3 1,grow");
 		JButton btnClose = new JButton("Close");
 		btnClose.addActionListener(new ActionListener() {
@@ -132,7 +132,7 @@ public class DirSettingView extends JDialog{
 			public void actionPerformed(ActionEvent e) {
 				Path.serverDir = tFServerDir.getText();
 				Path.storageDir = tFStorageDir.getText();
-				Path.sqliteDir = tFSQLiteDir.getText();
+				Path.sqliteFile = tFSQLiteDir.getText();
 				sm.saveDir();
 			}
 		});
