@@ -183,5 +183,6 @@ public class SettingManager {
 		this.xmlManager.put("directory", Path.sqliteFile, "name", "sqliteFile");
 		this.xmlManager.save();
 		this.pm.init();
+		this.cm.init();
 	}
 }

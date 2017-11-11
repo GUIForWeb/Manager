@@ -200,24 +200,17 @@ public class WebGUIManagerView extends JFrame {
 		Message msg = new Message();
 		if(!msg.java()) {
 			try {
+				System.out.println(cmd);
 				ProcessBuilder builder = new ProcessBuilder(cmd);
 				builder.redirectErrorStream(true);
 				Map<String, String> envs = builder.environment();
-				envs.put("CATALINA_HOME",Path.serverDir);
+				envs.put("CATALINA_HOME",Path.serverDir.substring(0,Path.serverDir.length()-1));
 				envs.put("JAVA_HOME",System.getProperty("java.home"));
-				Process process = builder.start();
-				BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-		        String tmpLine;
-		        this.isRunning = false;
-		        while (true) {
-		        	tmpLine = reader.readLine();
-		            if (tmpLine == null) {
-		            	break;
-		            }
-		            else {
-		            	this.isRunning = true;
-		            }
-		        }
+				builder.start();
+				if(!this.isRunning)
+					this.isRunning = true;
+				else 
+					this.isRunning = false;
 		        if(isRunning){
 		        	this.lblNewLabel.setIcon(new ImageIcon(Path.onImgFile));
 		        }
